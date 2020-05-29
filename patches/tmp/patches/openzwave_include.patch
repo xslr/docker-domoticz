@@ -1,20 +1,26 @@
-From 77eaddf4eb6b9e845131aa9e4e23b34459f471c0 Mon Sep 17 00:00:00 2001
+From 1f60d597b2a2d6b7ba78375a71dae8901132e222 Mon Sep 17 00:00:00 2001
 From: Subrat Meher <smeher02.aoe3@gmail.com>
-Date: Tue, 26 May 2020 11:07:21 +0200
+Date: Fri, 29 May 2020 20:02:48 +0200
 Subject: [PATCH] Fix openzwave include
 
-This is to allow finding openzwave files such as ValueIDIndexes.h
- which are located in /usr/include/openzwave and are included directly by name
- instead of with the openzwave prefix.
 ---
- CMakeLists.txt | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ CMakeLists.txt | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 4d3daeec3ca0b63d8c1612afebeade1d8d756583..665ca565486738376869da8d65480c66edd65e66 100644
+index 444b017f89cf62f1bf9b0bb6a2fa7af392004c3d..336c7a967c5c07bf3359159cf5a6311f680a282e 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -713,7 +713,7 @@ IF(OpenZWave)
+@@ -404,7 +404,7 @@ ELSE(LUA_LIBRARIES AND LUA_INCLUDE_DIRS)
+   IF(LUA_FOUND)
+     MESSAGE(STATUS "LUA library found at  : ${LUA_LIBRARIES}")
+     MESSAGE(STATUS "LUA includes found at : ${LUA_INCLUDE_DIR}")
+-    INCLUDE_DIRECTORIES(${LUA_INCLUDE_DIR}) 
++    INCLUDE_DIRECTORIES(${LUA_INCLUDE_DIR})
+   ELSE(LUA_FOUND)
+     MESSAGE(FATAL_ERROR "LUA 5.3 not found! use sudo apt-get install liblua5.3-dev")
+   ENDIF(LUA_FOUND)
+@@ -703,7 +703,7 @@ IF(OpenZWave)
      IF(CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
        include_directories(${OPENZWAVE_INCLUDE_DIRS})
      ELSE()
@@ -22,7 +28,7 @@ index 4d3daeec3ca0b63d8c1612afebeade1d8d756583..665ca565486738376869da8d65480c66
 +      include_directories(${OPENZWAVE_INCLUDE_DIRS})
      ENDIF()
      message(STATUS "OpenZWave includes found at: ${OPENZWAVE_INCLUDE_DIRS}")
-   else()
+   ELSE()
 -- 
 2.26.2
 

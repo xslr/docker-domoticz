@@ -21,8 +21,18 @@ if [ -z ${TEST_RUN+x} ]; then
 fi
 # set permissions for /config
 chown -R abc:abc \
-	/config \
+	/config/domoticz \
 	/tmp \
 	/var/lib/domoticz
-chmod -R 764 \
-	/config
+
+chown -R zigbee2mqtt:zigbee2mqtt \
+	/config/zigbee2mqtt
+
+chown -R homebridge:homebridge \
+	/config/homebridge
+
+chown -R mosquitto:mosquitto \
+	/config/mosquitto
+
+#chmod -R 764 \
+#	/config

@@ -64,8 +64,12 @@ RUN echo "**** install runtime packages ****" && \
 	iputils \
 	libressl \
 	lua5.3-dev \
+	mosquitto \
 	openssh \
-	python3-dev && \
+	nodejs \
+	npm \
+	python3-dev \
+	sudo && \
  echo "**** link libftdi libs ****" && \
  ln -s /usr/lib/libftdi1.so /usr/lib/libftdi.so && \
  ln -s /usr/lib/libftdi1.a /usr/lib/libftdi.a && \
@@ -132,15 +136,33 @@ RUN echo "**** build domoticz ****" && \
 	-DUSE_STATIC_BOOST=OFF \
 	-DUSE_STATIC_LIBSTDCXX=OFF \
 	-DUSE_STATIC_OPENZWAVE=OFF \
- 	# build jsoncpp as static lib
+	# build jsoncpp as static lib
 	-DBUILD_SHARED_LIBS=OFF \
- 	# fix build bug in mosquitto
- 	# https://github.com/eclipse/mosquitto/commit/4ab0f4bd3979fc196b2cec04a9298ecc7a38f62a
+	# fix build bug in mosquitto
+	# https://github.com/eclipse/mosquitto/commit/4ab0f4bd3979fc196b2cec04a9298ecc7a38f62a
 	-DWITH_BUNDLED_DEPS=ON \
 	-Wno-dev && \
  make && \
- make install && \
- echo "**** install BroadlinkRM2 plugin dependencies ****" && \
+ make install
+
+RUN groupadd -r homebridge && \
+ useradd --no-log-init --create-home -r -g homebridge homebridge && \
+ groupadd -r zigbee2mqtt && \
+ useradd --no-log-init --create-home --groups uucp -r -g zigbee2mqtt zigbee2mqtt
+
+RUN echo "**** install zigbee2mqtt ****" && \
+ git clone --depth=1 https://github.com/Koenkk/zigbee2mqtt.git /var/lib/zigbee2mqtt && \
+ cd /var/lib/zigbee2mqtt && \
+ rm -r ./data && \
+ ln -s /config/zigbee2mqtt ./data && \
+ chown -R zigbee2mqtt:zigbee2mqtt /var/lib/zigbee2mqtt && \
+ su - zigbee2mqtt && \
+ npm ci
+
+RUN echo "**** install homebridge ****" && \
+ npm install -g --unsafe-perm homebridge homebridge-config-ui-x homebridge-edomoticz
+
+RUN echo "**** install BroadlinkRM2 plugin dependencies ****" && \
  git clone https://github.com/mjg59/python-broadlink.git /tmp/python-broadlink && \
  cd /tmp/python-broadlink && \
  git checkout 8bc67af6 && \
@@ -169,6 +191,8 @@ RUN echo "**** build domoticz ****" && \
 # copy local files
 COPY root/ /
 
-# ports and volumes
-EXPOSE 8080 6144 1443
+# ports
+# don't bother with exposing ports. host networking is needed for homebridge
+
+# volumes
 VOLUME /config

@@ -1,0 +1,8 @@
+#!/usr/bin/with-contenv bash
+
+# set capabilities for domoticz binary
+#setcap cap_net_raw=+eip /var/lib/domoticz/domoticz
+
+cd /var/lib/zigbee2mqtt
+exec \
+	s6-setuidgid zigbee2mqtt npm start
