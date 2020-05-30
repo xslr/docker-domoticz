@@ -13,6 +13,8 @@ ENV HOME="/config"
 # copy prebuilds
 COPY patches/ /
 
+RUN qemu-arm-static --version
+
 RUN \
  echo "**** install build packages ****" && \
  apk add --no-cache --virtual=build-dependencies \
