@@ -51,7 +51,7 @@ RUN echo "**** install cmake 3.17 ****" && \
  mv cmake-3.17.2 cmake-src && \
  cd cmake-src && \
  ./bootstrap --prefix=/usr && \
- make -j16 && \
+ make && \
  make install
 
 RUN echo "**** install runtime packages ****" && \
@@ -97,7 +97,7 @@ RUN echo "**** install runtime packages ****" && \
  ln -s /tmp/open-zwave /tmp/open-zwave-read-only && \
  cd /tmp/open-zwave && \
  make && \
- make -j16 \
+ make \
 	instlibdir=usr/lib \
 	pkgconfigdir="usr/lib/pkgconfig/" \
 	PREFIX=/usr \
@@ -128,7 +128,7 @@ RUN echo "**** build domoticz ****" && \
  git apply /tmp/patches/openzwave_include.patch && \
  cmake \
  	# build jsoncpp as static lib
-	-DBUILD_SHARED_LIBS=True \
+	-DBUILD_SHARED_LIBS=OFF \
 	# fix build bug in mosquitto
 	# https://github.com/eclipse/mosquitto/commit/4ab0f4bd3979fc196b2cec04a9298ecc7a38f62a
 	-DWITH_BUNDLED_DEPS=ON \
@@ -142,7 +142,7 @@ RUN echo "**** build domoticz ****" && \
 	-DUSE_STATIC_LIBSTDCXX=OFF \
 	-DUSE_STATIC_OPENZWAVE=OFF \
 	-Wno-dev && \
- make -j16 && \
+ make && \
  make install
 
 RUN groupadd -r homebridge && \
