@@ -52,8 +52,8 @@ RUN echo "**** install cmake 3.17 ****" && \
  tar xf cmake-3.17.2.tar.gz && \
  mv cmake-3.17.2 cmake-src && \
  cd cmake-src && \
- ./bootstrap --prefix=/usr && \
- make && \
+ ./bootstrap --prefix=/usr --parallel=32 && \
+ make -j16 && \
  make install
 
 RUN echo "**** install runtime packages ****" && \
@@ -76,8 +76,8 @@ RUN echo "**** install runtime packages ****" && \
  ln -s /usr/lib/libftdi1.so /usr/lib/libftdi.so && \
  ln -s /usr/lib/libftdi1.a /usr/lib/libftdi.a && \
  ln -s /usr/include/libftdi1/ftdi.h /usr/include/ftdi.h && \
- echo "**** build telldus-core ****" && \
- mkdir -p \
+ echo "**** build telldus-core ****"
+ RUN mkdir -p \
 	/tmp/telldus-core && \
  tar xf /tmp/patches/telldus-core-2.1.2.tar.gz -C \
 	/tmp/telldus-core --strip-components=1 && \
@@ -98,7 +98,7 @@ RUN echo "**** install runtime packages ****" && \
  git clone https://github.com/OpenZWave/open-zwave.git /tmp/open-zwave && \
  ln -s /tmp/open-zwave /tmp/open-zwave-read-only && \
  cd /tmp/open-zwave && \
- make && \
+ make -j16 && \
  make \
 	instlibdir=usr/lib \
 	pkgconfigdir="usr/lib/pkgconfig/" \
@@ -111,7 +111,7 @@ RUN echo "**** install cereal ****" && \
  git clone --depth=1 https://github.com/USCiLab/cereal.git && \
  cd cereal && mkdir build && cd build && \
  cmake -DCMAKE_INSTALL_PREFIX=/usr -DJUST_INSTALL_CEREAL=ON .. && \
- make && \
+ make -j16 && \
  make install && \
  cd / && \
  rm -rf /tmp/cereal
@@ -144,7 +144,7 @@ RUN echo "**** build domoticz ****" && \
 	-DUSE_STATIC_LIBSTDCXX=OFF \
 	-DUSE_STATIC_OPENZWAVE=OFF \
 	-Wno-dev && \
- make && \
+ make -j16 && \
  make install
 
 RUN groupadd -r homebridge && \
