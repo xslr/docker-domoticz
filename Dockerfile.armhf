@@ -150,7 +150,8 @@ RUN echo "**** build domoticz ****" && \
 RUN groupadd -r homebridge && \
  useradd --no-log-init --create-home -r -g homebridge homebridge && \
  groupadd -r zigbee2mqtt && \
- useradd --no-log-init --create-home --groups uucp -r -g zigbee2mqtt zigbee2mqtt
+ # add zigbee2mqtt user to dialout
+ useradd --no-log-init --create-home --groups 20 -r -g zigbee2mqtt zigbee2mqtt
 
 RUN echo "**** install zigbee2mqtt ****" && \
  git clone --depth=1 https://github.com/Koenkk/zigbee2mqtt.git /var/lib/zigbee2mqtt && \
